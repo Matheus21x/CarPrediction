@@ -1,7 +1,9 @@
 import pandas as pd
-import matplotlib
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+import numpy as np
 
 df = pd.read_csv(r'C:\Users\Matheus\OneDrive\Desktop\ML-CARPRED\CarPrice_Assignment.csv')
 
@@ -42,3 +44,21 @@ modelo.fit(x_train, y_train)
 #predicao do modelo com os valores de teste 
 predicoes = modelo.predict(x_test)
 
+
+plt.figure(figsize=(7, 7))
+plt.scatter(y_test, predicoes)  
+plt.xlabel("Valores reais (y_test)")
+plt.ylabel("Previsões (predicoes)")
+plt.title("Valores reais vs Previsões")
+min_val = min(y_test.min(), predicoes.min())
+max_val = max(y_test.max(), predicoes.max())
+plt.plot([min_val, max_val], [min_val, max_val])
+plt.show()
+
+mae = mean_absolute_error(y_test, predicoes)
+mse = mean_squared_error(y_test, predicoes)
+rmse = np.sqrt(mse)
+
+print("MAE :", mae)
+print("MSE :", mse)
+print("RMSE:", rmse)
