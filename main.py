@@ -1,4 +1,7 @@
 import pandas as pd
+import matplotlib
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
 
 df = pd.read_csv(r'C:\Users\Matheus\OneDrive\Desktop\ML-CARPRED\CarPrice_Assignment.csv')
 
@@ -18,4 +21,24 @@ df['brand'] = df['brand'].replace({
     'maxda': 'mazda'
 })
 
-print(df['brand'].unique())
+#transfomar colunas de texto em binario
+df = pd.get_dummies(df, columns=[
+    'fueltype', 'aspiration', 'doornumber', 'carbody',
+    'drivewheel', 'enginelocation', 'enginetype',
+    'cylindernumber', 'fuelsystem', 'brand'
+], drop_first=True)
+
+#definindo X e Y e treinos/testes
+x = df.drop('price', axis=1) 
+y = df['price']
+x_train, x_test, y_train, y_test = train_test_split(x,y)
+
+#instanciando o modelo selecionado
+modelo = LinearRegression()
+
+#treinando o modelo com os valores de treino
+modelo.fit(x_train, y_train)
+
+#predicao do modelo com os valores de teste 
+predicoes = modelo.predict(x_test)
+
