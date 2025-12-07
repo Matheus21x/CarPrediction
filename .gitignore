@@ -1,0 +1,8 @@
+# Ignorar arquivos de dados
+*.csv
+
+# Ignorar relatórios gerados
+*.html
+
+# Ignorar pastas de cache do Python
+__pycache__/
