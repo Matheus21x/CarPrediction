@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 import numpy as np
+import joblib
 
 df = pd.read_csv(r'C:\Users\Matheus\OneDrive\Desktop\ML-CARPRED\CarPrice_Assignment.csv')
 
@@ -23,15 +24,10 @@ df['brand'] = df['brand'].replace({
     'maxda': 'mazda'
 })
 
-#transfomar colunas de texto em binario
-df = pd.get_dummies(df, columns=[
-    'fueltype', 'aspiration', 'doornumber', 'carbody',
-    'drivewheel', 'enginelocation', 'enginetype',
-    'cylindernumber', 'fuelsystem', 'brand'
-], drop_first=True)
+colunas = ['horsepower', 'enginesize', 'highwaympg', 'curbweight']
 
 #definindo X e Y e treinos/testes
-x = df.drop('price', axis=1) 
+x = df[colunas]
 y = df['price']
 x_train, x_test, y_train, y_test = train_test_split(x,y)
 
@@ -44,7 +40,10 @@ modelo.fit(x_train, y_train)
 #predicao do modelo com os valores de teste 
 predicoes = modelo.predict(x_test)
 
+#salvar o modelo criado utilizando joblib
+joblib.dump(modelo, 'modelo_carros_simples.pkl')
 
+#plotando grafico
 plt.figure(figsize=(7, 7))
 plt.scatter(y_test, predicoes)  
 plt.xlabel("Valores reais (y_test)")
@@ -55,10 +54,11 @@ max_val = max(y_test.max(), predicoes.max())
 plt.plot([min_val, max_val], [min_val, max_val])
 plt.show()
 
+#mediçao
 mae = mean_absolute_error(y_test, predicoes)
 mse = mean_squared_error(y_test, predicoes)
 rmse = np.sqrt(mse)
-
 print("MAE :", mae)
 print("MSE :", mse)
 print("RMSE:", rmse)
+
